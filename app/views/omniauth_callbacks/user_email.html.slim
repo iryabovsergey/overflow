@@ -1,0 +1,13 @@
+h4 Please enter your email
+
+
+
+div.row
+  div.col-lg-5
+    = form_for @user, url: set_user_email_path(@user.id) do |f|
+      div style="color:red"
+        == f.error_messages
+      div.form-group
+        = f.text_field :email, class: 'form-control', value: ''
+      br
+      = f.submit 'Submit', class: 'btn btn-default'

@@ -1,0 +1,3 @@
+div.row id="the_comment"
+   div class="col-lg-offset-2 col-lg-10"
+      p class="small" style="color: blue" #{@comment}

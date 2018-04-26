@@ -1,0 +1,8 @@
+h4 List of all questions
+div.action_bar
+  == link_to 'New question', new_question_path, class: 'btn btn-default' if can?(:create, Question)
+div.errors style="color:red; margin:5px"
+div.notices style="color:green; margin:5px"
+hr
+== render @questions
+div#new_questions

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>The new stackoverflow</title>
+  <%= csrf_meta_tags %>
+  <%= action_cable_meta_tag %>
+  <%= Gon::Base.render_data %>
+  <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+</head>
+<body>
+
+<header class="navbar navbar-top navbar-inverse" class="margin-bottom: 0px">
+  <div class="container">
+    <%= link_to "The new overflow", root_path, style: "font-size: 1.7em; float: left; padding-top: 8px; color: white" %>
+    <nav>
+      <ul class="nav navbar-nav pull-right">
+        <% if user_signed_in? %>
+            <li class="navbar-text" style="color: white;">You have signed in as '<%== current_user.name %>'</li>
+            <li>|</li>
+            <li><%= link_to "Sign out", destroy_user_session_path, method: "delete" %></li>
+        <% else %>
+            <li><%= link_to "Register a new user", new_user_registration_path %></li>
+            <li><%= link_to "Sign in", new_user_session_path %></li>
+        <% end %>
+      </ul>
+    </nav>
+  </div>
+</header>
+<% if notice.present? || alert.present? %>
+    <div class="container">
+      <div class="notice"><%= notice %></div>
+      <div class="alert" style="color: #ee221c"><%= alert.html_safe if alert.present? %></div>
+    </div>
+<% end %>
+
+<div class="container">
+  <%= yield %>
+</div>
+
+</body>
+</html>

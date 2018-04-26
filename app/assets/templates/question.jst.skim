@@ -1,0 +1,36 @@
+div id="div_question_#{@question.id}"
+  div.row style="margin-bottom: .5em"
+    div.col-lg-1 style="color: blue" id="score_q_#{@question.id}"
+      | #{@question_score}
+    div.col-lg-1
+      a href="#{@question_url}" #{@question.title}
+    div.col-lg-3
+      a href="#{@question_url}" #{@question.body}
+    div.col-lg-2 style="font-size: 10pt"
+      | #{@attachments}
+    div.col-lg-1
+      | #{@author}
+    div.col-lg-1
+      - if gon.user_id
+        a href="" class="btn btn-default btn-xs add_comment" data-obj-id="#{@question.id}" Add comment
+    div.col-lg-2 id="actions_question_#{@question.id}"
+      - if gon.user_id
+        - if gon.user_id == @question.user_id
+            a href="" class="btn btn-default btn-sm edit_question_link" id="edit_question_link_#{@question.id}" data-question-id="#{@question.id}" Edit
+        - else
+            a href="#{@vp_url}" class="btn btn-default btn-sm give_vote" id="give_vote_plus" data-div-id="score_q_#{@question.id}" data-method="post" <span class="glyphicon glyphicon-plus"></span>
+            a href="#{@vm_url}" class="btn btn-default btn-sm give_vote" id="give_vote_minus" data-div-id="score_q_#{@question.id}" data-method="post" <span class="glyphicon glyphicon-minus"></span>
+            a href="#{@vc_url}" class="btn btn-default btn-sm give_vote" id="give_vote_cancel" data-div-id="score_q_#{@question.id}" data-method="delete" <span class="glyphicon glyphicon-fire"></span> Cancel
+
+<div class="comment_form" id="comments_form_obj_#{@question.id}" style="display:none">
+   <p>New comment</p>
+   <form class="new_comment" id="new_comment" action="/questions/#{@question.id}/comments" accept-charset="UTF-8" data-remote="true" method="post">
+      <input name="utf8" type="hidden" value="✓">
+      <div id="errors_div_obj_#{@question.id}" style="color:red"></div>
+      <div class="form-group"><label for="comment_body">Body</label><textarea class="form-control" name="comment[body]" id="comment_body"></textarea></div>
+      <div style="margin-bottom: 10px; margin-top: 20px"><a id="commens_form_cancel_q_#{@question.id}" class="btn btn-default comments_cancel" href="">Cancel</a> <input type="submit" name="commit" value="Submit" class="btn btn-default" data-disable-with="Submit"></div>
+   </form>
+</div>
+
+div.comments_list id="comments_obj_#{@question.id}"
+hr

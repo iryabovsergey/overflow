@@ -1,0 +1,6 @@
+<% if @answer.errors.messages.empty? %>
+ $('#new_answer').find('#answer_body').val('')
+ $('#new_answers').append('<%= j render @answer unless @answer.new_record? %>');
+<% else %>
+  $('#errors_div').html('<%= @answer.errors.full_messages.join('<br>') %>');
+<% end %>

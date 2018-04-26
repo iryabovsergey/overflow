@@ -1,0 +1,8 @@
+<% if @answer.errors.messages.empty? %>
+  $('#div_answer_<%= @answer.id %>').remove();
+  $('#msg_div').html('Answer successfully deleted');
+  $('#err_div').html('');
+<% else %>
+  $('#msg_div').html('');
+  $('#err_div').html('<%= @answer.errors.full_messages.join('<br>') %>');
+<% end %>

@@ -1,0 +1,48 @@
+- @subscription = @question.subscriptions.where(user_id: current_user.id).first
+div style="margin-bottom: .5em"
+  ==> link_to '< All questions', questions_path, class: 'btn btn-default'
+  - if current_user.present? && current_user.author_of?(@question)
+    ==> link_to 'Delete question', @question, method: :delete, id: 'del_question', data: { confirm: 'Are you sure?' }, class: 'btn btn-default'
+    ==> link_to 'Subscribe', question_subscriptions_path(@question), method: :post, class: 'btn btn-default'
+    ==> link_to 'Remove Subscrition', subscription_path(@subscription), method: :delete, class: 'btn btn-danger' if @subscription.present?
+hr
+== 'You subscribed to this question' if @subscription.present?
+== 'You did not subscribe to this question' if @subscription.nil?
+hr
+
+div.notices style="color: green"
+  == @notice
+
+div.errors style="color: red"
+  == @errors
+
+h4
+  == @question.title
+
+div style="margin-bottom: 1em"
+  == @question.body
+
+-if @question.attachments.present?
+  div.attached_files style="margin-bottom: 1em"
+    hr
+    p Attachments:
+    -@question.attachments.each do |a|
+      ==link_to a.file.identifier, a.file.url
+      br
+hr
+
+h4 List of answers
+div style="margin-bottom: 20px"
+  div id="err_div" style="color: red"
+  div id="msg_div" style="color: green"
+
+div class="answers"
+  =render Answer.ordered_answers(@question)
+  div class="row newly_created_answers" id="new_answers"
+
+hr
+h4 New Answer
+div style="margin-bottom: 30px"
+-@answer = @question.answers.build
+-@answer.attachments.build
+  == render 'answers/form'

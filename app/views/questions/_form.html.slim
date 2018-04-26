@@ -1,0 +1,25 @@
+-@question.attachments.build
+= nested_form_for @question, html:{multipart: true} do |f|
+  == f.error_messages
+
+  div.form-group
+    = f.label :title
+    = f.text_field :title, class: 'form-control'
+
+  div.form-group
+    = f.label :body
+    = f.text_area :body, class: 'form-control'
+
+  h5 Attachments:
+  = f.fields_for :attachments do |a|
+    div id="new_question_attachments"
+      = a.label :file
+      = a.file_field :file, class: 'form-control'
+      == a.link_to_remove "Remove attachment", class: 'btn btn-default btn-sm'
+
+  div style="margin: 5px" id="additional_attachment_question"
+    == f.link_to_add "Add attachment", :attachments, class: 'btn btn-default btn-sm'
+
+  div style="margin-bottom: 10px; margin-top: 20px"
+    ==> link_to '< Back', :back, class: 'btn btn-default'
+    ==> f.submit 'Submit', class: 'btn btn-default'

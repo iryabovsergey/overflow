@@ -1,0 +1,21 @@
+= nested_form_for [@question, @answer], remote: true do |f|
+
+  div id="errors_div" style="color:red"
+
+  == 'To create an answer you must log in' unless user_signed_in?
+
+  div.form-group
+    = f.label :body
+    = f.text_area :body, class: 'form-control', disabled: !user_signed_in?
+
+  div style="margin-bottom: 10px"
+    = f.fields_for :attachments do |a|
+      div#new_answer_attachments
+        = a.label :file
+        = a.file_field :file
+        == a.link_to_remove "Remove attachment", class: 'btn btn-default btn-sm'
+
+    div style="margin: 5px"
+      == f.link_to_add "Add attachment", :attachments, class: 'btn btn-default btn-sm'
+
+  == f.submit 'Submit', class: 'btn btn-default', id: 'submit_answer_button', disabled: !user_signed_in?

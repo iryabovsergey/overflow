@@ -1,0 +1,12 @@
+p New comment
+=nested_form_for [commentable, comment], remote: true do |f|
+  div id="errors_div_obj_#{commentable.id}" style="color:red"
+
+  div.form-group
+    = f.label :body
+    = f.text_area :body, class: 'form-control'
+
+  div style="margin-bottom: 10px; margin-top: 20px"
+    == link_to 'Cancel', '', id:"commens_form_cancel_q_#{commentable.id}", class: 'btn btn-default comments_cancel'
+    '
+    == f.submit 'Submit', class: 'btn btn-default'

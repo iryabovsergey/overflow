@@ -1,0 +1,8 @@
+-if @questions.present?
+  h3 For the last 24 hour the following questions have been created
+  ul
+    -@question_titles.each do |q_title|
+      li q_title
+
+-else
+  h3 For the last 24 hour no questions were created

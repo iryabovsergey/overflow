@@ -1,0 +1,6 @@
+<% if @answer.errors.messages.empty? %>
+  $('#errors_answer_<%= @answer.id %>').html('');
+  $('#div_answer_<%= @answer.id %>').html('<%= j render(@answer)  %>');
+<% else %>
+  $('#errors_answer_<%= @answer.id %>').html('<%= @answer.errors.full_messages.join('<br>') %>')
+<% end %>

@@ -1,0 +1,6 @@
+<% if @comment.errors.messages.empty? %>
+$('#comments_obj_<%= @comment.commentable_id %>').append('<%= j render @comment %>');
+$('#comments_form_obj_<%= @comment.commentable_id %>').find("#comment_body").val('');
+<% else %>
+$('#errors_div_obj_<%= @comment.commentable_id %>').html('<%= @comment.errors.full_messages.join('<br>') %>');
+<% end %>

@@ -1,0 +1,9 @@
+<% if @question.errors.messages.empty? %>
+  $('#actions_question_<%= @question.id %>').show();
+  $('#form_edit_question_<%= @question.id %>').hide();
+  $('#div_question_<%= @question.id %>').html('<%= j render @question %>');
+  $('#errors_question_<%= @question.id %>').html('')
+  bind_question_events()
+<% else %>
+  $('#errors_question_<%= @question.id %>').html('<%= @question.errors.full_messages.join(', ').to_s %>')
+<% end %>

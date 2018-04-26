@@ -1,0 +1,70 @@
+- unless answer.new_record?
+  div id="div_answer_#{answer.id}"
+    div.row
+      div.row style="margin-bottom: 5px; min-height:30px; border-bottom: 0px solid #EEEEEE"
+        div.col-lg-1 id="score_a_#{answer.id}"
+          == answer.score
+        div.col-lg-1 class="#{answer.is_best ? 'best_answer' : ''}"
+          == 'BEST' if answer.is_best
+        div.col-lg-3 class="#{answer.is_best ? 'best_answer_body' : ''}"
+          == answer.body
+        div.col-lg-1
+          == answer.user.name
+        div.col-lg-2
+          - answer.attachments.each do |a|
+            == link_to a.file.identifier, a.file.url
+            br
+        div.col-lg-1
+          == link_to 'Add comment', '', class: 'btn btn-default btn-xs add_comment', data: { obj_id: answer.id } if current_user
+        div.col-lg-3 id="actions_answer_#{answer.id}"
+          ==> link_to 'The Best', answer_mark_the_best_path(answer), method: 'put', remote: true, class: 'btn btn-default btn-sm best_answer_link', data: { answer_id: answer.id }, id: "best_answer_link_#{answer.id}" if !answer.is_best && can?(:mark_the_best, answer)
+          ==> link_to 'Edit', '', class: 'btn btn-default btn-sm edit_answer_link', data: { answer_id: answer.id }, id: "edit_answer_link_#{answer.id}" if can?(:edit, answer)
+          ==> link_to 'Delete', answer, method: 'delete', remote: true, id: "del_answer_#{answer.id}", data: { confirm: 'Are you sure?' }, class: 'btn  btn-sm btn-default del_answer_link' if can?(:delete, answer)
+
+        - if can?(:create, answer.votes.build)
+          ==> link_to '<span class="glyphicon glyphicon-plus"></span>'.html_safe, answer_votes_path(answer, vote: 'plus', votable_class: 'Answer'), method: 'post', remote: true, id: 'give_vote_plus', class: 'btn btn-default btn-sm give_vote', data: { div_id: "score_a_#{answer.id}" }
+          ==> link_to '<span class="glyphicon glyphicon-minus"></span>'.html_safe, answer_votes_path(answer, vote: 'minus', votable_class: 'Answer'), method: 'post', remote: true, id: 'give_vote_minus', class: 'btn btn-default btn-sm give_vote', data: { div_id: "score_a_#{answer.id}" }
+          ==> link_to '<span class="glyphicon glyphicon-fire"></span> Cancel'.html_safe, vote_path(answer, answer_id: answer.id, votable_class: 'Answer'), method: 'delete', remote: true, id: 'give_vote_cancel', class: 'btn btn-default btn-sm give_vote', data: { div_id: "score_a_#{answer.id}" }
+
+      - if current_user && current_user.author_of?(answer)
+        div.row.answer_form
+          div class="row" style="margin-bottom: 0px;"
+            = nested_form_for [answer], html: { id: "form_edit_answer_#{answer.id}", style: 'display: none;  border: 1px solid lightsteelblue; padding: 10px', class: 'answer_form_ajax' }, data: { answer_id: answer.id }, remote: true do |f|
+              div id="errors_answer_#{answer.id}" style="color:red"
+
+              div.form-group
+                = f.label :body, id: "answer_body_#{answer.id}"
+                = f.text_area :body, class: 'form-control', disabled: !user_signed_in?
+
+              div.answer_attachments.nested-fields style="margin-bottom: 10px" id="attachments"
+                - answer.attachments.build
+                = f.fields_for :attachments do |a|
+                  - if a.object.persisted?
+                    == a.check_box :_destroy
+                    '
+                    == a.object.file.identifier
+                    br
+                  - else
+                    div id="attachments_answer_#{answer.id}"
+                      div
+                        = a.label :file
+                        = a.file_field :file
+                        == a.link_to_remove "Remove attachment", class: 'btn btn-default btn-sm'
+              div style="margin: 5px" id="additional_attachment_answer_#{answer.id}"
+                == f.link_to_add "Add attachment", :attachments, class: 'btn btn-default btn-sm'
+
+              div style="margin-bottom: 10px"
+                ==> link_to 'Cancel', '', class: 'btn btn-default cancel_edit_answer_link', data: { answer_id: answer.id }, id: "cancel_edit_answer_link_#{answer.id}"
+                ==> f.submit 'Submit', class: 'btn btn-default', id: "submit_answer_button_#{answer.id}"
+
+    div.row id="comments_form_obj_#{answer.id}" style="display:none"
+      - new_comment = answer.comments.build(user: current_user)
+      == render 'comments/form', comment: new_comment, commentable: answer
+
+    div id="comments_obj_#{answer.id}"
+      - answer.comments.each do |comment|
+        - unless comment.new_record?
+          == render comment
+
+    div id="new_comments_obj_#{answer.id}"
+hr

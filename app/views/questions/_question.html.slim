@@ -1,0 +1,33 @@
+div id="div_question_#{question.id}"
+  div.row style="margin-bottom: .5em"
+    div.col-lg-1 style="color: blue" id="score_q_#{question.id}"
+      == question.score
+    div.col-lg-1
+      == link_to question.title, question
+    div.col-lg-3
+      == link_to question.body, question
+    div.col-lg-2 style="font-size: 10pt"
+      == question.attachments.map { |a| a.file.identifier }.join('<br>')
+    div.col-lg-1
+      == question.user.name
+    div.col-lg-1
+      == link_to 'Add comment', '', class: 'btn btn-default btn-xs add_comment', data: { obj_id: question.id } if current_user
+    div.col-lg-2 id="actions_question_#{question.id}"
+      - if current_user
+        - if current_user.author_of?(question)
+          == link_to 'Edit', '', id: "edit_question_link_#{question.id}", class: 'btn btn-default btn-sm edit_question_link', data: { question_id: question.id }
+        - else
+          ==> link_to '<span class="glyphicon glyphicon-plus"></span>'.html_safe, question_votes_path(question, vote: 'plus', votable_class: 'Question'), method: 'post', remote: true, id: 'give_vote_plus', class: 'btn btn-default btn-sm give_vote', data: { div_id: "score_q_#{question.id}" }
+          ==> link_to '<span class="glyphicon glyphicon-minus"></span>'.html_safe, question_votes_path(question, vote: 'minus', votable_class: 'Question'), method: 'post', remote: true, id: 'give_vote_minus', class: 'btn btn-default btn-sm give_vote', data: { div_id: "score_q_#{question.id}" }
+          ==> link_to '<span class="glyphicon glyphicon-fire"></span> Cancel'.html_safe, question_vote_path(question, 0, votable_class: 'Question'), method: 'delete', remote: true, id: 'give_vote_cancel', class: 'btn btn-default btn-sm give_vote', data: { div_id: "score_q_#{question.id}" }
+  div.question_form
+    == render 'questions/questions_row_form', question: question if current_user && current_user.author_of?(question)
+  div.comment_form id="comments_form_obj_#{question.id}" style="display:none"
+    - new_comment = question.comments.build(user: current_user)
+    == render 'comments/form', comment: new_comment, commentable: question
+  div.comments_list id="comments_obj_#{question.id}"
+    - question.comments.each do |comment|
+      - unless comment.new_record?
+        == render comment
+  div id="new_comments_obj_#{question.id}"
+hr

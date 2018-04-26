@@ -1,0 +1,34 @@
+= nested_form_for question, html: {id: "form_edit_question_#{question.id}", style: 'display: none; border: 1px solid cadetblue; padding: 10px', class: 'question_form_ajax'}, data: {question_id: question.id}, remote: true  do |f|
+  div id="errors_question_#{question.id}" style="color:red"
+
+  div.form-group
+    = f.label :title
+    = f.text_field :title, class: 'form-control'
+
+  div.form-group
+    = f.label :body
+    = f.text_area :body, class: 'form-control'
+  p.h5
+  == "Attachments (select to delete):" if question.attachments.present?
+
+  div style="boder: soild 1px black; background: #FEFEFE" id="question_#{question.id}_attachments"
+    - question.attachments.build
+    = f.fields_for :attachments do |a|
+      - if a.object.persisted?
+        == a.check_box :_destroy
+        '
+        == a.object.file.identifier
+        br
+      - else
+        div id="attachments_question_#{question.id}"
+          = a.label :file
+          = a.file_field :file, class: 'form-control'
+          == a.link_to_remove "Remove attachment", class: 'btn btn-default btn-sm'
+
+  div style="margin: 5px" id="additional_attachments_question_#{question.id}"
+    == f.link_to_add "Add attachment", :attachments, data:{ target: "#question_#{question.id}_attachments" }, class: 'btn btn-default btn-sm'
+
+  div style="margin-bottom: 10px"
+    == link_to 'Cancel', :back, class: 'btn btn-default cancel_edit_question_link', id: "cancel_edit_question_link#{question.id}"
+    '
+    == f.submit 'Submit', class: 'btn btn-default'
